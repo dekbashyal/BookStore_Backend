@@ -115,24 +115,26 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-export const deleteProduct = (req, res) => {
+export const deleteProduct = async (req, res) => {
   // Logic to delete a product by ID
   try {
-    const isExist = Product.findById(req.id);
+    const isExist = await Product.findById(req.id);
     if (!isExist)
       return res.status(404).json({
         status: "error",
         data: "Product not found",
       });
 
+    const deletedProduct = await Product.findByIdAndDelete(req.id);
     return res.status(200).json({
       status: "success",
-      data: `Delete product with ID: ${req.params.id}`,
+      data: deletedProduct,
+      message: "Product deleted successfully",
     });
   } catch (err) {
     return res.status(500).json({
       status: "error",
-      data: err,
+      data: err.message,
     });
   }
 };

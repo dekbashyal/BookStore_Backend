@@ -6,17 +6,19 @@ import {
   deleteProduct,
   createProduct,
 } from "../controllers/productControllers.js";
-import { checkAdmin } from "../middlewares/checkUser.js";
+import { checkUser, checkAdmin } from "../middlewares/checkUser.js";
+import { checkId } from "../middlewares/checkId.js";
 
 const router = express.Router();
 
 router.route("/").get(getProducts);
 router.route("/post").post(createProduct);
-router.route("/products/:id").get(getProductById);
 
 router
-  .route("/admin/:id")
-  .put(checkAdmin("admin"), updateProduct)
-  .delete(checkAdmin("admin"), deleteProduct);
+  .route("/:id")
+  .get(checkId, getProductById)
+  .put(checkId, checkUser, checkAdmin, updateProduct)
+  .delete(checkId, deleteProduct);
+  
 
 export default router;

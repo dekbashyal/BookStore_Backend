@@ -3,6 +3,7 @@ import { connecttoDB } from "./database/database.js";
 import dotenv from "dotenv";
 import authRoute from "./routes/UserRoutes.js";
 import productRoute from "./routes/ProductRoutes.js";
+import orderRoute from "./routes/OrderRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", authRoute);
 app.use("/api/products", productRoute);
+app.use("/api/orders", orderRoute);
 
 // app.use((req, res) => {
 //   res.status(404).json({ message: "Route not found" });
