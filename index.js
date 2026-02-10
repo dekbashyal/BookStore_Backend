@@ -10,13 +10,15 @@ import fileUpload from "express-fileupload";
 dotenv.config();
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://bookstore-frontend-two-roan.vercel.app",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: "https://bookstore-frontend-two-roan.vercel.app",
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   }),
+// );
 
 const port = process.env.PORT || 5000;
 connecttoDB(process.env.MONGO_URL);
