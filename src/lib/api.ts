@@ -1,5 +1,5 @@
 // API Configuration - Update BASE_URL to your backend URL
-const BASE_URL = 'https://book-store-alpha-gray.vercel.app';
+const BASE_URL = 'https://bookstore-backend-zkgq.onrender.com/';
 
 // Types
 export interface Book {
@@ -60,7 +60,7 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
   });
 
   const data = await response.json();
-  
+
   if (!response.ok) {
     throw new Error(data.message || data.data || 'Something went wrong');
   }
