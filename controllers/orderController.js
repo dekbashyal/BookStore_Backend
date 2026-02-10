@@ -1,3 +1,5 @@
+import Order from "../models/Order.js";
+
 export const getOrder = async (req, res) => {
   // Logic to get an order by ID
 

@@ -3,7 +3,8 @@ import {
   createOrder,
   getOrder,
   getOrders,
-} from "../controllers/orderController";
+} from "../controllers/orderController.js";
+import { checkUser } from "../middlewares/checkUser.js";
 
 const router = express.Router();
 

@@ -1,12 +1,28 @@
 import Product from "../models/Product.js";
+import fs from "fs";
+import path from "path";
+
+const isRemoteUrl = (value) =>
+  typeof value === "string" && /^(https?:)?\/\//i.test(value);
+
+const resolveImageUrl = (req, image) => {
+  if (!image) return null;
+  if (isRemoteUrl(image)) return image;
+  const base = `${req.protocol}://${req.get("host")}`;
+  return `${base}/uploads/${image}`;
+};
 
 export const getProducts = async (req, res) => {
   // Logic to get all products
   try {
     const products = await Product.find({});
+    const data = products.map((p) => ({
+      ...p.toObject(),
+      imageUrl: resolveImageUrl(req, p.image),
+    }));
     return res.status(200).json({
       status: "success",
-      data: products,
+      data,
     });
   } catch (err) {
     return res.status(500).json({
@@ -27,7 +43,10 @@ export const getProductById = async (req, res) => {
       });
     return res.status(200).json({
       status: "success",
-      data: isExist,
+      data: {
+        ...isExist.toObject(),
+        imageUrl: resolveImageUrl(req, isExist.image),
+      },
     });
   } catch (err) {
     return res.status(500).json({
@@ -40,6 +59,7 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   // Logic to create a new product
   const { title, author, description, price, category, stock } = req.body ?? {};
+  const providedImage = req.body?.image || req.body?.imageUrl;
   if (!req.body) {
     return res.status(400).json({
       status: "error",
@@ -52,18 +72,31 @@ export const createProduct = async (req, res) => {
       data: "All fields (title, author, description, price, category, stock) are required.",
     });
   }
+  // Accept either uploaded file (req.imagePath) or a direct image URL/body string
+  const imageValue = req.imagePath || providedImage;
+  if (!imageValue) {
+    return res.status(400).json({
+      status: "error",
+      data: "Provide an image file (multipart/form-data) or an image URL in body.",
+    });
+  }
   try {
-    await Product.create({
+    const created = await Product.create({
       title,
       author,
       description,
       price,
       category,
       stock,
+      image: imageValue,
     });
     res.status(200).json({
       status: "success",
-      data: "Product created successfully",
+      data: {
+        ...created.toObject(),
+        imageUrl: resolveImageUrl(req, created.image),
+      },
+      message: "Product created successfully",
     });
   } catch (err) {
     return res.status(500).json({
@@ -77,6 +110,7 @@ export const updateProduct = async (req, res) => {
   // Logic to update a product by ID
   const { id } = req.params;
   const { title, author, description, price, category, stock } = req.body;
+  const providedImage = req.body?.image || req.body?.imageUrl;
   if (
     !title ||
     !author ||
@@ -91,20 +125,43 @@ export const updateProduct = async (req, res) => {
     });
   }
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { title, author, description, price, category, stock },
-      { new: true, runValidators: true },
-    );
-    if (!updatedProduct) {
+    // Find existing to optionally replace/delete image file
+    const existing = await Product.findById(id);
+    if (!existing) {
       return res.status(404).json({
         status: "error",
         message: "Product not found",
       });
     }
+
+    // Determine if new image was provided via upload or URL
+    const newImageValue = req.imagePath || providedImage;
+
+    // If replacing image and the old one is a local file, delete it
+    if (newImageValue && existing.image && !isRemoteUrl(existing.image)) {
+      const oldPath = path.join("uploads", existing.image);
+      fs.access(oldPath, fs.constants.F_OK, (accessErr) => {
+        if (!accessErr) {
+          fs.unlink(oldPath, () => {});
+        }
+      });
+    }
+
+    const updateData = { title, author, description, price, category, stock };
+    if (newImageValue) {
+      updateData.image = newImageValue;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
     return res.status(200).json({
       status: "success",
-      data: updatedProduct,
+      data: {
+        ...updatedProduct.toObject(),
+        imageUrl: resolveImageUrl(req, updatedProduct.image),
+      },
       message: "Product updated successfully",
     });
   } catch (err) {
@@ -124,7 +181,15 @@ export const deleteProduct = async (req, res) => {
         status: "error",
         data: "Product not found",
       });
-
+    // Delete local image file if present and not a remote URL
+    if (isExist.image && !isRemoteUrl(isExist.image)) {
+      const imgPath = path.join("uploads", isExist.image);
+      fs.access(imgPath, fs.constants.F_OK, (accessErr) => {
+        if (!accessErr) {
+          fs.unlink(imgPath, () => {});
+        }
+      });
+    }
     const deletedProduct = await Product.findByIdAndDelete(req.id);
     return res.status(200).json({
       status: "success",
