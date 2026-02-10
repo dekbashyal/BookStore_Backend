@@ -19,6 +19,7 @@ const Index = () => {
     try {
       const response = await productsApi.getAll();
       setBooks(response.data);
+      console.log(response)
     } catch (error) {
       console.error('Failed to load books:', error);
     } finally {

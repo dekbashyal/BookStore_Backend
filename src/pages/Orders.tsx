@@ -82,13 +82,13 @@ const Orders = () => {
                     <span>
                       {item.product?.title || 'Unknown Book'} × {item.quantity}
                     </span>
-                    <span>₹{((item.product?.price || 0) * item.quantity).toFixed(2)}</span>
+                    <span>${((item.product?.price || 0) * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-4 flex justify-between border-t pt-4 font-semibold">
                 <span>Total</span>
-                <span>₹{order.totalAmount.toFixed(2)}</span>
+                <span>${order.totalAmount.toFixed(2)}</span>
               </div>
             </CardContent>
           </Card>

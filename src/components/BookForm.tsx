@@ -22,6 +22,7 @@ const BookForm = ({ mode }: BookFormProps) => {
     price: '',
     category: '',
     stock: '',
+    image: '',
   });
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const BookForm = ({ mode }: BookFormProps) => {
         price: book.price.toString(),
         category: book.category,
         stock: book.stock.toString(),
+        image: book.image || '',
       });
     } catch (error) {
       toast.error('Failed to load book');
@@ -60,6 +62,7 @@ const BookForm = ({ mode }: BookFormProps) => {
         price: parseFloat(formData.price),
         category: formData.category,
         stock: parseInt(formData.stock),
+        image: formData.image,
       };
 
       if (mode === 'create') {
@@ -126,7 +129,7 @@ const BookForm = ({ mode }: BookFormProps) => {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="price">Price (₹)</Label>
+          <Label htmlFor="price">Price ($)</Label>
           <Input
             id="price"
             name="price"
@@ -163,6 +166,18 @@ const BookForm = ({ mode }: BookFormProps) => {
             placeholder="0"
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="image">Image URL</Label>
+        <Input
+          id="image"
+          name="image"
+          value={formData.image}
+          onChange={handleChange}
+          required
+          placeholder="https://example.com/cover.jpg"
+        />
       </div>
 
       <div className="flex gap-4">

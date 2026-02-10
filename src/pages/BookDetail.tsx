@@ -72,9 +72,17 @@ const BookDetail = () => {
       <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
         {/* Book Image */}
         <div className="aspect-[3/4] overflow-hidden rounded-lg bg-muted">
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted">
-            <span className="font-serif text-8xl text-muted-foreground/30">📚</span>
-          </div>
+          {book.image ? (
+            <img
+              src={book.image}
+              alt={book.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted">
+              <span className="font-serif text-8xl text-muted-foreground/30">📚</span>
+            </div>
+          )}
         </div>
 
         {/* Book Details */}
@@ -85,7 +93,7 @@ const BookDetail = () => {
           <h1 className="font-serif text-3xl font-bold md:text-4xl">{book.title}</h1>
           <p className="mt-2 text-lg text-muted-foreground">by {book.author}</p>
           
-          <p className="mt-6 text-3xl font-bold">₹{book.price.toFixed(2)}</p>
+          <p className="mt-6 text-3xl font-bold">${book.price.toFixed(2)}</p>
           
           <div className="mt-4">
             <span className={`text-sm font-medium ${book.stock > 0 ? 'text-success' : 'text-destructive'}`}>

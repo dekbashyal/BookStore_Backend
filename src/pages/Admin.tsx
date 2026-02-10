@@ -57,7 +57,7 @@ const Admin = () => {
       await productsApi.delete(id);
       setBooks((prev) => prev.filter((book) => book._id !== id));
       toast.success('Book deleted successfully');
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.message || 'Failed to delete book');
     }
   };
@@ -112,7 +112,7 @@ const Admin = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{totalValue.toFixed(2)}</div>
+            <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
           </CardContent>
         </Card>
       </div>
@@ -148,10 +148,11 @@ const Admin = () => {
                       <TableCell className="font-medium">{book.title}</TableCell>
                       <TableCell>{book.author}</TableCell>
                       <TableCell>{book.category}</TableCell>
-                      <TableCell className="text-right">₹{book.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">${book.price.toFixed(2)}</TableCell>
                       <TableCell className="text-right">
                         <span className={book.stock === 0 ? 'text-destructive' : ''}>
                           {book.stock}
+                          
                         </span>
                       </TableCell>
                       <TableCell className="text-right">

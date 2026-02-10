@@ -1,5 +1,5 @@
 // API Configuration - Update BASE_URL to your backend URL
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const BASE_URL = 'http://localhost:5000';
 
 // Types
 export interface Book {
@@ -10,7 +10,7 @@ export interface Book {
   price: number;
   category: string;
   stock: number;
-  image?: string;
+  image: string;
 }
 
 export interface User {
@@ -45,7 +45,7 @@ const getAuthHeaders = (): HeadersInit => {
   const token = localStorage.getItem('token');
   return {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token ? { Authorization: token } : {}),
   };
 };
 
@@ -71,13 +71,13 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
 // Auth API
 export const authApi = {
   login: (email: string, password: string) =>
-    apiFetch<AuthResponse>('/users/login', {
+    apiFetch<AuthResponse>('/api/users/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
 
   register: (username: string, email: string, password: string, role: string = 'user') =>
-    apiFetch<{ status: string; message: string }>('/users/register', {
+    apiFetch<{ status: string; message: string }>('/api/users/register', {
       method: 'POST',
       body: JSON.stringify({ username, email, password, role }),
     }),
@@ -86,25 +86,25 @@ export const authApi = {
 // Products API
 export const productsApi = {
   getAll: () =>
-    apiFetch<{ status: string; data: Book[] }>('/products'),
+    apiFetch<{ status: string; data: Book[] }>('/api/products'),
 
   getById: (id: string) =>
-    apiFetch<{ status: string; data: Book }>(`/products/${id}`),
+    apiFetch<{ status: string; data: Book }>(`/api/products/${id}`),
 
   create: (book: Omit<Book, '_id'>) =>
-    apiFetch<{ status: string; data: string }>('/products', {
+    apiFetch<{ status: string; data: string }>('/api/products', {
       method: 'POST',
       body: JSON.stringify(book),
     }),
 
   update: (id: string, book: Omit<Book, '_id'>) =>
-    apiFetch<{ status: string; data: Book; message: string }>(`/products/${id}`, {
+    apiFetch<{ status: string; data: Book; message: string }>(`/api/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(book),
     }),
 
   delete: (id: string) =>
-    apiFetch<{ status: string; data: Book; message: string }>(`/products/${id}`, {
+    apiFetch<{ status: string; data: Book; message: string }>(`/api/products/${id}`, {
       method: 'DELETE',
     }),
 };
@@ -112,13 +112,13 @@ export const productsApi = {
 // Orders API
 export const ordersApi = {
   getAll: () =>
-    apiFetch<{ status: string; orders: Order[] }>('/orders'),
+    apiFetch<{ status: string; orders: Order[] }>('/api/orders'),
 
   getById: (id: string) =>
-    apiFetch<{ status: string; order: Order }>(`/orders/${id}`),
+    apiFetch<{ status: string; order: Order }>(`/api/orders/${id}`),
 
   create: (products: { product: string; quantity: number }[], totalAmount: number) =>
-    apiFetch<{ status: string; message: string }>('/orders', {
+    apiFetch<{ status: string; message: string }>('/api/orders', {
       method: 'POST',
       body: JSON.stringify({ products, totalAmount }),
     }),

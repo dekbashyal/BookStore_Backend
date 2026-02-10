@@ -84,7 +84,7 @@ const Cart = () => {
                   <span className="text-muted-foreground">
                     {item.book.title} × {item.quantity}
                   </span>
-                  <span>₹{(item.book.price * item.quantity).toFixed(2)}</span>
+                  <span>${(item.book.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -93,7 +93,7 @@ const Cart = () => {
             
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span>₹{totalAmount.toFixed(2)}</span>
+              <span>${totalAmount.toFixed(2)}</span>
             </div>
 
             <Button

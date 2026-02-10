@@ -28,9 +28,13 @@ const BookCard = ({ book }: BookCardProps) => {
       <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
         <CardContent className="p-4">
           <div className="mb-4 aspect-[3/4] overflow-hidden rounded-md bg-muted">
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted">
-              <span className="font-serif text-4xl text-muted-foreground/50">📚</span>
-            </div>
+            {book.image ? (
+              <img src={book.image} alt={book.title} className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted">
+                <span className="font-serif text-4xl text-muted-foreground/50">📚</span>
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <Badge variant="secondary" className="text-xs">
@@ -41,7 +45,7 @@ const BookCard = ({ book }: BookCardProps) => {
             </h3>
             <p className="text-sm text-muted-foreground">{book.author}</p>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">₹{book.price.toFixed(2)}</p>
+              <p className="text-lg font-semibold">${book.price.toFixed(2)}</p>
               <span className={`text-xs ${book.stock > 0 ? 'text-success' : 'text-destructive'}`}>
                 {book.stock > 0 ? `${book.stock} in stock` : 'Out of stock'}
               </span>
