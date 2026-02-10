@@ -1,5 +1,5 @@
 // API Configuration - Update BASE_URL to your backend URL
-const BASE_URL = 'https://book-store-alpha-gray.vercel.app';
+const BASE_URL = 'https://bookstore-backend-zkgq.onrender.com/';
 
 // Types
 export interface Book {
