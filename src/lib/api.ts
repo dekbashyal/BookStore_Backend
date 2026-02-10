@@ -1,5 +1,5 @@
 // API Configuration - Update BASE_URL to your backend URL
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'https://book-store-alpha-gray.vercel.app';
 
 // Types
 export interface Book {
